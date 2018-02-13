@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>
+        AngularJs Table with ng-table module Example
+    </title>
+    <link href="bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="angular.js"></script>
+    <link rel="stylesheet"; href="ng-table.css">
+    <script src="ng-table.js"></script>
+    
+    <script type="text/javascript">
+        
+        var allTableEvents = [];
+        var app = angular.module("ngtableApp", ["ngTable"]);
+        app.controller("ngtableCtrl", function ($scope, NgTableParams, ngTableEventsChannel) {
+            $scope.filtroAtual = [];
+
+            $scope.users = [
+                { name: "Madhav Sai", age: 10, location: 'Nagpur' },
+                { name: "Suresh Dasari", age: 30, location: 'Chennai' },
+                { name: "Rohini Alavala", age: 29, location: 'Chennai' },
+                { name: "Praveen Kumar", age: 25, location: 'Bangalore' },
+                { name: "Sateesh Chandra", age: 27, location: 'Vizag' },
+            ];
+                                                              // Filtro default, não obrigatório              
+            $scope.usersTable = new NgTableParams({ count: 5, sorting: { name: "asc" }  }, { dataset: $scope.users });
+            
+            ngTableEventsChannel.onAfterReloadData(function(logEvent, allTableEvents, eventName){
+                $scope.filtroAtual = logEvent.orderBy();
+            }, $scope);
+            
+            $scope.mostraFiltro = () => alert($scope.filtroAtual);
+        });
+
+        
+    </script>
+</head>
+<body ng-app="ngtableApp">
+
+    <div ng-controller="ngtableCtrl" class="container">
+        <div class="row">
+            <h2>Ng-Table - Acesso à ordenação corrente</h2>
+        </div>
+
+        <div class="row">
+            <table ng-table="usersTable" class="table table-striped">
+                <tr ng-repeat="user in $data">
+                    <td data-title="'Name'" sortable="'name'">{{user.name}}</td>
+                    <td data-title="'Age'"  sortable="'age'">{{user.age}}</td>
+                    <td data-title="'Location'">{{user.location}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="row">
+            <button ng-click="mostraFiltro()">mostrar filtro</button>
+        </div>
+    </div>
+</body>
+</html>
